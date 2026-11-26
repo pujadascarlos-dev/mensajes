@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>GeoAR Mensajes - Hito 1</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #131a2a;
+      --accent: #00e5ff;
+      --accent-dark: #009bb0;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Pantallas */
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100dvh;
+      padding: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.14);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+      margin-bottom: 10px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #041017;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .error-box {
+      display: none;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fecaca;
+      font-size: 13px;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    /* Visor de Cámara Fullscreen */
+    #screen-camera {
+      padding: 0;
+      position: relative;
+      background: #000;
+    }
+
+    #camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hud-top {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      gap: 8px;
+    }
+
+    .status-pill {
+      background: rgba(11, 15, 25, 0.78);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .hud-bottom {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .hud-btn {
+      flex: 1;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(11, 15, 25, 0.82);
+      backdrop-filter: blur(8px);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA 1: INICIO / SELECTOR DE PRUEBA -->
+  <section id="screen-home" class="screen active">
+    <div class="card">
+      <span class="badge">Bitácora · Hito 1</span>
+      <h1>GeoAR Mensajes</h1>
+      <p>Prueba base de arquitectura: validación de interfaz móvil y acceso en vivo a la cámara trasera del dispositivo.</p>
+      <button class="btn btn-primary" onclick="irAPantalla('screen-receptor')">Simular enlace recibido (Receptor)</button>
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-creador')">Ver vista Creador (Base)</button>
+    </div>
+  </section>
+
+  <!-- PANTALLA 2: MODO CREADOR (BASE PARA HITO 4) -->
+  <section id="screen-creador" class="screen">
+    <div class="card">
+      <span class="badge">Modo Creador</span>
+      <h1>Preparar envío</h1>
+      <p>En los próximos hitos acá vas a elegir el mensaje, emojis, imagen/GIF, distancia (2m a 10m) y rumbo para generar el enlace.</p>
+      <button class="btn btn-primary" onclick="irAPantalla('screen-receptor')">Probar cómo lo recibe el contacto</button>
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-home')">Volver al inicio</button>
+    </div>
+  </section>
+
+  <!-- PANTALLA 3: MODO RECEPTOR (INVITACIÓN Y PERMISO DE CÁMARA) -->
+  <section id="screen-receptor" class="screen">
+    <div class="card">
+      <span class="badge">Mensaje recibido</span>
+      <h1>¡Tenés un mensaje oculto cerca!</h1>
+      <p>Activá la cámara de tu celular para empezar a buscarlo con la brújula en el espacio.</p>
+      <button id="btn-start-camera" class="btn btn-primary" onclick="iniciarCamara('environment')">Abrir cámara</button>
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-home')">Volver</button>
+      <div id="camera-error" class="error-box"></div>
+    </div>
+  </section>
+
+  <!-- PANTALLA 4: VISOR CÁMARA EN VIVO -->
+  <section id="screen-camera" class="screen">
+    <div class="hud-top">
+      <div class="status-pill">
+        <span class="dot"></span>
+        <span id="camera-label">Cámara trasera activa</span>
+      </div>
+      <div class="status-pill">Hito 1 OK</div>
+    </div>
+
+    <video id="camera-video" autoplay playsinline muted></video>
+
+    <div class="hud-bottom">
+      <button class="hud-btn" onclick="alternarCamara()">Cambiar cámara</button>
+      <button class="hud-btn" onclick="detenerYSalir()">Cerrar visor</button>
+    </div>
+  </section>
+
+  <script>
+    let currentStream = null;
+    let currentFacingMode = 'environment';
+
+    function irAPantalla(idPantalla) {
+      document.querySelectorAll('.screen').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(idPantalla).classList.add('active');
+    }
+
+    function mostrarError(mensaje) {
+      const box = document.getElementById('camera-error');
+      box.textContent = mensaje;
+      box.style.display = 'block';
+    }
+
+    function ocultarError() {
+      const box = document.getElementById('camera-error');
+      box.style.display = 'none';
+    }
+
+    async function iniciarCamara(facingMode = 'environment') {
+      ocultarError();
+      currentFacingMode = facingMode;
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        mostrarError('Tu navegador bloqueó el acceso a la cámara. Asegurate de abrir la página por HTTPS o localhost.');
+        return;
+      }
+
+      try {
+        detenerStreamActual();
+
+        const constraints = {
+          audio: false,
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const videoEl = document.getElementById('camera-video');
+        videoEl.srcObject = currentStream;
+
+        document.getElementById('camera-label').textContent =
+          facingMode === 'environment' ? 'Cámara trasera activa' : 'Cámara frontal activa';
+
+        irAPantalla('screen-camera');
+      } catch (err) {
+        console.error(err);
+        mostrarError('No se pudo abrir la cámara (' + err.name + '). Revisá los permisos del navegador para este sitio.');
+      }
+    }
+
+    function alternarCamara() {
+      const nuevoModo = currentFacingMode === 'environment' ? 'user' : 'environment';
+      iniciarCamara(nuevoModo);
+    }
+
+    function detenerStreamActual() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+    }
+
+    function detenerYSalir() {
+      detenerStreamActual();
+      irAPantalla('screen-receptor');
+    }
+
+    // Si el enlace se abre con ?modo=receptor, va directo a la invitación
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('modo') === 'receptor') {
+        irAPantalla('screen-receptor');
+      }
+    });
+  </script>
+</body>
+</html>
